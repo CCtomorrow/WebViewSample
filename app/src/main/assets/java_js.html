@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>Java和Javascript相互调用示例</title>
+    <style type="text/css">
+        .block {
+            margin: 10px 0;
+            padding: 10px;
+            background: antiquewhite;
+        }
+
+        p {
+            font-size: 18px;
+            color: red;
+        }
+
+        button {
+            display: block;
+            margin: 10px auto;
+            font-size: 18px;
+            background: cadetblue;
+            color: white;
+        }
+
+        .text {
+            font-size: 16px;
+        }
+    </style>
+
+    <script>
+
+        const msg = {
+            name: "小小",
+            age: 18,
+            sex: 0
+        };
+
+        const params = "js://m.linghit.com?params=" + JSON.stringify(msg);
+
+        function callJavaHello() {
+            // mWebView.addJavascriptInterface(new AndroidtoJs(), "test");
+            // 上面的代码向html注入了全局的 window.test 的对象，所以我们直接调用即可
+            if (window.test) {
+                test.hello(JSON.stringify(msg));
+            }
+        }
+
+        function callJavaHello2() {
+            if (window.test) {
+                var rt = test.hello2("告诉我周杰伦的相关信息?");
+                // {"name":"周杰伦","age":28}
+                var jrt = JSON.parse(rt);
+                alert("姓名：" + jrt.name + "\n年龄：" + jrt.age);
+            }
+        }
+
+        function callOverrideUrl() {
+            // java 的 shouldOverrideUrlLoading 方法一般在从一个页面跳转到另外一个页面会触发调用
+            // document.location = "https://m.linghit.com";
+            // 这里如果我们如果认为的不传递http协议的URI，而使用自定义的URI，然后在java代码里面做处理，就可以达到调用java代码的目的
+            // 这里我们规定scheme为js，host为m.linghit.com，后面带上参数
+            document.location = params;
+        }
+
+        function jsPrompt() {
+            var rt = prompt(params);
+            // {"name":"周杰伦","age":28}
+            var jrt = JSON.parse(rt);
+            alert("姓名：" + jrt.name + "\n年龄：" + jrt.age);
+        }
+
+        function callJSLoadurl(name) {
+            alert("姓名：" + name);
+            var elem = document.getElementById("loadurl");
+            elem.innerText = "java使用WebView.loadUrl形式调用js代码，并传递了参数:" + name;
+        }
+
+        function callJSEval(name) {
+            alert("姓名：" + name);
+            var elem = document.getElementById("eval");
+            elem.innerText = "java使用WebView.evaluateJavascript形式调用js代码，并传递了参数:" + name;
+            return "OK";
+        }
+
+        function todoScheme() {
+            var params = "linghit://m.linghit.com?params=" + JSON.stringify(msg);
+            document.location = params;
+        }
+
+    </script>
+</head>
+<body>
+
+<div class="block">
+    <p> 这个block 展示 javascript 调用 Android 的代码</p>
+    <ul>
+        <li>通过 WebView 的 addJavascriptInterface() 进行对象映射</li>
+    </ul>
+
+    <button onclick="callJavaHello()" type="button">点击调用 Java 的 hello 方法</button>
+
+    <button onclick="callJavaHello2()" type="button">点击调用 Java 的 hello2 方法(该方法有返回值)</button>
+
+    <ul>
+        <li>通过 WebViewClient 的 shouldOverrideUrlLoading() 方法回调拦截 url</li>
+    </ul>
+
+    <button onclick="callOverrideUrl()" type="button">点击调用 shouldOverrideUrlLoading() 方法</button>
+
+    <ul>
+        <li>通过 WebChromeClient 的 onJsPrompt()</li>
+    </ul>
+
+    <button onclick="jsPrompt()" type="button">利用 onJsPrompt() 方法(利用这个可以有返回值)</button>
+
+</div>
+
+<div class="block">
+    <p> 这个block 展示 Android 调用 javascript 的代码</p>
+
+    <p id="loadurl"/>
+
+    <p id="eval"/>
+
+</div>
+
+<div class="block">
+    <button onclick="todoScheme()" type="button">利用 scheme 方法打开任意一个当前应用配置了对应信息的页面</button>
+</div>
+
+</body>
+</html>

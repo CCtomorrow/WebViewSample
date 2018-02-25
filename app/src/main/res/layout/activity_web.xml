@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <Button
+        android:id="@+id/call_loadurl"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="loadUrl方式"
+        android:textAllCaps="false"
+        android:textSize="14sp"/>
+
+    <Button
+        android:id="@+id/call_eval"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="110dp"
+        android:text="evaluateJavascript方式"
+        android:textAllCaps="false"
+        android:textSize="14sp"/>
+
+    <Button
+        android:id="@+id/call_free"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="290dp"
+        android:text="自动选择"
+        android:textAllCaps="false"
+        android:textSize="14sp"/>
+
+</FrameLayout>
