@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
@@ -28,6 +30,8 @@ import android.widget.Button;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.Serializable;
 
 public class WebViewActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -158,6 +162,78 @@ public class WebViewActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void initJsJava1() {
         mWebView.addJavascriptInterface(new AndroidtoJs(), "test");
+        JsCallJavaCallBackImpl callBack = new JsCallJavaCallBackImpl(this);
+        mWebView.addJavascriptInterface(new JsJava(callBack), "lingjiWebApp");
+        mWebView.addJavascriptInterface(new JsJava2(callBack), "MMCWKEventHandler");
+    }
+
+    private class JsJava implements Serializable, IJsCallJavaCallBack {
+
+        private Handler mHandler;
+        private IJsCallJavaCallBack mCallBack;
+
+        public JsJava(IJsCallJavaCallBack callBack) {
+            mCallBack = callBack;
+            mHandler = new Handler(Looper.getMainLooper());
+        }
+
+        private void runOnUiThread(Runnable runnable) {
+            mHandler.post(runnable);
+        }
+
+        @JavascriptInterface
+        @Override
+        public String getUserInfo() {
+            return mCallBack.getUserInfo();
+        }
+
+        @JavascriptInterface
+        @Override
+        public void MMCLogin() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mCallBack.MMCLogin();
+                }
+            });
+        }
+
+        @JavascriptInterface
+        @Override
+        public void MMCOnlinePay(final String data) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mCallBack.MMCOnlinePay(data);
+                }
+            });
+        }
+    }
+
+    private class JsJava2 implements Serializable, IJsCallJavaCallBackV2 {
+
+        private Handler mHandler;
+        private IJsCallJavaCallBackV2 mCallBack;
+
+        public JsJava2(IJsCallJavaCallBackV2 callBack) {
+            mCallBack = callBack;
+            mHandler = new Handler(Looper.getMainLooper());
+        }
+
+        private void runOnUiThread(Runnable runnable) {
+            mHandler.post(runnable);
+        }
+
+        @JavascriptInterface
+        @Override
+        public void postMessage(final String data) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mCallBack.postMessage(data);
+                }
+            });
+        }
     }
 
     /**

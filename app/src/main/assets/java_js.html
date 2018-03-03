@@ -133,5 +133,103 @@
     <button onclick="todoScheme()" type="button">利用 scheme 方法打开任意一个当前应用配置了对应信息的页面</button>
 </div>
 
+<div class="block">
+    <p> 这个block 展示 javascript 调用 Android 的代码旧的实现</p>
+    <ul>
+        <li>通过 lingjiWebApp 调用 getUserInfo 方法</li>
+    </ul>
+
+    <button onclick="getUserInfo()" type="button">lingjiWebApp.getUserInfo()</button>
+
+    <ul>
+        <li>通过 lingjiWebApp 调用 MMCLogin 方法</li>
+    </ul>
+
+    <button onclick="MMCLogin()" type="button">lingjiWebApp.MMCLogin()</button>
+
+    <ul>
+        <li>通过 lingjiWebApp 调用 MMCOnlinePay 方法</li>
+    </ul>
+
+    <button onclick="MMCOnlinePay()" type="button">lingjiWebApp.MMCOnlinePay()</button>
+</div>
+
+<div class="block">
+    <p> 这个block 展示 javascript 调用 Android 的代码新的实现 MMCWKEventHandler.postMessage(data)</p>
+    <p> {
+        "methodName": "MMCOnlinePay",
+        "callBackID": "",
+        "params": {
+        "order_id": "CHFKHJL7908FG",
+        "pay_point": "bazihehun"
+        }
+        }
+    </p>
+    <ul>
+        <li>通过 MMCWKEventHandler 调用 getUserInfo 方法，var p = { "methodName": "getUserInfo" };</li>
+    </ul>
+
+    <button onclick="getUserInfo2()" type="button">MMCWKEventHandler.postMessage()</button>
+
+    <ul>
+        <li>通过 MMCWKEventHandler 调用 MMCLogin 方法，var p = { "methodName": "MMCLogin" };</li>
+    </ul>
+
+    <button onclick="MMCLogin2()" type="button">MMCWKEventHandler.postMessage()</button>
+
+    <ul>
+        <li>通过 MMCWKEventHandler 调用 MMCOnlinePay 方法，var p = { "methodName": "MMCOnlinePay", "params": { "order_id":
+            "CHFKHJL7908FG", "pay_point": "bazihehun" } };
+        </li>
+    </ul>
+
+    <button onclick="MMCOnlinePay2()" type="button">MMCWKEventHandler.postMessage()</button>
+
+</div>
+
+<script>
+    function getUserInfo() {
+        var rt = lingjiWebApp.getUserInfo();
+        alert(rt())
+    }
+
+    function MMCLogin() {
+        lingjiWebApp.MMCLogin();
+    }
+
+    function MMCOnlinePay() {
+        var p = {
+            "order_id": "CHFKHJL7908FG",
+            "pay_point": "bazihehun"
+        };
+        lingjiWebApp.MMCOnlinePay(JSON.stringify(p));
+    }
+
+    function getUserInfo2() {
+        var p = {
+            "methodName": "getUserInfo"
+        };
+        MMCWKEventHandler.postMessage(JSON.stringify(p));
+    }
+
+    function MMCLogin2() {
+        var p = {
+            "methodName": "MMCLogin"
+        };
+        MMCWKEventHandler.postMessage(JSON.stringify(p));
+    }
+
+    function MMCOnlinePay2() {
+        var p = {
+            "methodName": "MMCOnlinePay",
+            "params": {
+                "order_id": "CHFKHJL7908FG",
+                "pay_point": "bazihehun"
+            }
+        };
+        MMCWKEventHandler.postMessage(JSON.stringify(p));
+    }
+</script>
+
 </body>
 </html>
